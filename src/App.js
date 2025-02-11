@@ -410,13 +410,13 @@ import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 // Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyDBChuXvs30KtWwbV02B-sgxzV8WQWvjLI",
-  authDomain: "superchat-62a49.firebaseapp.com",
-  projectId: "superchat-62a49",
-  storageBucket: "superchat-62a49.firebasestorage.app",
-  messagingSenderId: "139137719122",
-  appId: "1:139137719122:web:6e378331d3fd747bcbb88b",
-  measurementId: "G-GZ21DL5PMG"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
