@@ -1,0 +1,89 @@
+// rules_version = '2';
+
+// service cloud.firestore {
+//   match /databases/{database}/documents {
+    
+//     // Default rule: Deny all reads and writes unless explicitly allowed
+//     match /{document=**} {
+//       allow read, write: if false;
+//     }
+    
+//     // Rules for the 'message' collection
+//     match /message/{docId} {
+//       allow read: if request.auth.uid != null;
+//       allow create: if canCreateMessage();
+//     }
+
+//     // Function to check message creation permissions
+//     function canCreateMessage() {
+//       let isSignedIn = request.auth.uid != null;
+//       let isOwner = request.auth.uid == request.resource.data.uid;
+//       let isNotBanned = exists(/databases/$(database)/documents/banned/$(request.auth.uid)) == false;
+
+//       // Ensure user is signed in, is the owner of the message, and is not banned
+//       return isSignedIn && isOwner && isNotBanned;
+//     }
+//   }
+// }
+
+
+
+// rules_version = '2';
+
+// service cloud.firestore {
+//   match /databases/{database}/documents {
+    
+//     // Default rule: Deny all reads and writes unless explicitly allowed
+//     match /{document=**} {
+//       allow read, write: if false;
+//     }
+    
+//     // Rules for the 'message' collection
+//     match /message/{docId} {
+//       allow read: if request.auth.uid != null;  // Ensure user is authenticated
+//       allow create: if canCreateMessage();
+//     }
+
+//     // Function to check message creation permissions
+//     function canCreateMessage() {
+//       let isSignedIn = request.auth.uid != null;  // Check if the user is signed in
+//       let isNotBanned = exists(/databases/$(database)/documents/banned/$(request.auth.uid)) == false;  // Check if the user is banned
+
+//       // Ensure the user is signed in and not banned
+//       return isSignedIn && isNotBanned;
+//     }
+//   }
+// }
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Deny all reads and writes by default
+    match /{document=**} {
+      // allow read, write: if false;
+      allow read, write: if request.auth != null;
+    }
+
+    // Rules for the 'messages' collection
+    match /messages/{docId} {
+      // Allow reading only if the user is authenticated
+      allow read: if request.auth.uid != null;
+
+      // Allow creating a message only if the user is signed in and not banned
+      allow create: if canCreateMessage();
+    }
+
+    // Function to check if the user is allowed to create a message
+    function canCreateMessage() {
+      // Check if the user is signed in
+      let isSignedIn = request.auth.uid != null;
+      // Check if the user is not banned
+      let isNotBanned = !exists(/databases/$(database)/documents/banned/$(request.auth.uid));
+
+      // Ensure the user is signed in and not banned
+      return isSignedIn && isNotBanned;
+    }
+  }
+}
